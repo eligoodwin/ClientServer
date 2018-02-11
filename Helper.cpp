@@ -1,26 +1,56 @@
-//
-// Created by eli goodwin on 2/9/18.
-//
+/*********************************************************************
+ ** Program Filename: Helper.h
+ ** Author: Eli Goodwin
+ ** Date: 2018/02/05
+ ** Description: Manages the TCP connection to the server
+ ** Input: none
+ ** Output: none
+ *********************************************************************/
 
 #include "Helper.h"
 using namespace std;
 
+/*********************************************************************
+    ** Function: Error()
+    ** Description: used for printing errors in the program
+    ** Parameters: const char* msg = messsage to display user
+    ** Pre-Conditions: error must have occurred
+    ** Post-Conditions: none
+    ** Return: none
+    *********************************************************************/
 void error(const char* msg){
     perror(msg);
     exit(0);
 }
 
+/*********************************************************************
+    ** Function: getPortFromArgs()
+    ** Description: gets command line arguments and validates them
+    ** Parameters:
+    *       char* argv[] array of arguments
+    *       int argc number of arguments
+    ** Pre-Conditions: none
+    ** Post-Conditions: terminate program if arguments are incorrect
+    ** Return: none
+    *********************************************************************/
 int getPortFromArgs(char *argv[], int argc ){
     if(argc != 3){
-        return -1;
+        error("ERROR: too few arguments. input should be './chatClient <hostname> <port>'");
     }
     return atoi(argv[2]);
 }
 
-
+/*********************************************************************
+    ** Function: getUsername()
+    ** Description: gets and validates username from user
+    ** Parameters: none
+    ** Pre-Conditions: none
+    ** Post-Conditions: none
+    ** Return: string representing username of client
+    *********************************************************************/
 string getUsername(){
-    string username = "";
-    string response = "";
+    string username;
+    string response;
     cout << GREEN <<"Enter a username: " << RESET;
     do{
         getline(cin, username);

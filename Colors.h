@@ -1,6 +1,14 @@
 //
 // Created by eli goodwin on 2/9/18.
 //
+/*********************************************************************
+ ** Program Filename: Colors.h
+ ** Author: Eli Goodwin
+ ** Date: 2018/02/05
+ ** Description: macros defining colors for cmd line output
+ ** Input: none
+ ** Output: none
+ *********************************************************************/
 
 #ifndef CLIENTSERVER_COLORS_H
 #define CLIENTSERVER_COLORS_H

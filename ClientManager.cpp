@@ -1,18 +1,21 @@
-//
-// Created by eli goodwin on 2/9/18.
-//
+/*********************************************************************
+ ** Program Filename: ClientManager.hpp
+ ** Author: Eli Goodwin
+ ** Date: 2018/02/05
+ ** Description: Manages the TCP connection to the server
+ ** Input: none
+ ** Output: none
+ *********************************************************************/
+
+#include "ClientManager.h"
+#include <string.h>
+
 
 using namespace std;
-#include "ClientManager.h"
-ClientManager::ClientManager(std::string username, std::string targethostName, int targetHostPort) {
-    this->username = username;
+
+ClientManager::ClientManager(std::string targethostName, int targetHostPort) {
     serverHostInfo = gethostbyname(targethostName.c_str());
     this->targetHostPort = targetHostPort;
-}
-
-void ClientManager::addMessageToQueue(std::string message){
-    messagesToSend.push(message);
-    sendMessage();
 }
 
 
@@ -33,23 +36,22 @@ bool ClientManager::createSocket() {
     return true;
 }
 
-bool ClientManager::sendMessage(){
-    if(!messagesToSend.empty()){
-        string message = messagesToSend.front();
-        messagesToSend.pop();
+void ClientManager::sendMessage(string message){
         //prepare the buffer
         memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
         strcpy(buffer, message.c_str());
         //send message and get response
-        send(socketFD, buffer, strlen(buffer), 0);
-        //recv(socketFD, buffer, sizeof(buffer) - 1, 0);
-        //cout << "RESPONSE: " << buffer << endl;
+        write(socketFD, buffer, strlen(buffer));
 
-
-        return true;
-    }
-    return false;
 };
+
+string ClientManager::receiveMessage(){
+    memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
+    recv(socketFD, buffer, BUFFER_SIZE, 0);
+
+    return buffer;
+}
+
 
 bool ClientManager::connectToTargetHost(){
     return (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0);
@@ -59,15 +61,3 @@ void ClientManager::endConnection() {
     close(socketFD);
 }
 
-void ClientManager::printIncomingMessage(){
-
-        memset(threadBuffer, '\0', BUFFER_SIZE * sizeof(char));
-       int  size = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
-        if(size > 0)
-            cout << "Received: " << threadBuffer << endl;
-    }
-}
-
-void ClientManager::createRecievingThread() {
-    thread receive(&ClientManager::printIncomingMessage, this);
-}
