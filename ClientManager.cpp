@@ -1,21 +1,19 @@
-/*********************************************************************
- ** Program Filename: ClientManager.hpp
- ** Author: Eli Goodwin
- ** Date: 2018/02/05
- ** Description: Manages the TCP connection to the server
- ** Input: none
- ** Output: none
- *********************************************************************/
+//
+// Created by eli goodwin on 2/9/18.
+//
 
 #include "ClientManager.h"
-#include <string.h>
 
 
 using namespace std;
 
-ClientManager::ClientManager(std::string targethostName, int targetHostPort) {
+ClientManager::ClientManager(std::string targethostName, int targetHostPort, RingBuffer* rb) {
     serverHostInfo = gethostbyname(targethostName.c_str());
     this->targetHostPort = targetHostPort;
+    killWorkerThread = false;
+    this->createSocket();
+    this->connectToTargetHost();
+    ringBuffer = rb;
 }
 
 
@@ -40,9 +38,8 @@ void ClientManager::sendMessage(string message){
         //prepare the buffer
         memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
         strcpy(buffer, message.c_str());
-        //send message and get response
-        write(socketFD, buffer, strlen(buffer));
-
+        send(socketFD, buffer, strlen(buffer), 0);
+        ringBuffer->push(buffer, true);
 };
 
 string ClientManager::receiveMessage(){
@@ -61,3 +58,18 @@ void ClientManager::endConnection() {
     close(socketFD);
 }
 
+void ClientManager::incomingListener() {
+    char tempBuffer[BUFFER_SIZE];
+    memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
+    while(!killWorkerThread){
+        int result = recv(socketFD, tempBuffer, BUFFER_SIZE, 0);
+        if(result > 0){
+            ringBuffer->push(tempBuffer, false);
+            memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
+        }
+    }
+}
+
+void ClientManager::killListener() {
+    killWorkerThread = true;
+}
