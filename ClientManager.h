@@ -21,11 +21,11 @@ class ClientManager {
 public:
     ClientManager(std::string targethostName, int targetHostPort, RingBuffer* ringBuffer);
     void sendMessage(std::string message);
-    std::string receiveMessage();
     void endConnection();
-
     void incomingListener();
     void killListener();
+
+    friend void updateWindow();
 
 private:
     RingBuffer* ringBuffer;

@@ -3,8 +3,6 @@
 //
 
 #include "ClientManager.h"
-
-
 using namespace std;
 
 ClientManager::ClientManager(std::string targethostName, int targetHostPort, RingBuffer* rb) {
@@ -15,7 +13,6 @@ ClientManager::ClientManager(std::string targethostName, int targetHostPort, Rin
     this->connectToTargetHost();
     ringBuffer = rb;
 }
-
 
 //client created successfully
 bool ClientManager::createSocket() {
@@ -42,13 +39,6 @@ void ClientManager::sendMessage(string message){
         ringBuffer->push(buffer, true);
 };
 
-string ClientManager::receiveMessage(){
-    memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
-    recv(socketFD, buffer, BUFFER_SIZE, 0);
-
-    return buffer;
-}
-
 
 bool ClientManager::connectToTargetHost(){
     return (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0);
@@ -65,7 +55,7 @@ void ClientManager::incomingListener() {
         int result = recv(socketFD, tempBuffer, BUFFER_SIZE, 0);
         if(result > 0){
             ringBuffer->push(tempBuffer, false);
-            memset(buffer, '\0', BUFFER_SIZE * sizeof(char));
+            memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
         }
     }
 }

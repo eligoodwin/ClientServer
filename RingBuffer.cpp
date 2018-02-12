@@ -9,7 +9,6 @@ using namespace std;
 RingBuffer::RingBuffer(int capacity) {
     this->capacity = capacity;
     currentIndex = -1;
-    storage.reserve(capacity);
     size = 0;
 };
 
@@ -22,8 +21,10 @@ void RingBuffer::push(string mess, bool fromClient){
         ++size;
         return;
     }
-    storage[++currentIndex % capacity].fromClinet = fromClient;
-    storage[++currentIndex % capacity].message = mess;
+
+    currentIndex = (++currentIndex % capacity);
+    storage[currentIndex].fromClinet = fromClient;
+    storage[currentIndex].message = mess;
 }
 
 MessageData* RingBuffer::iterateObject(int i){
