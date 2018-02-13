@@ -34,7 +34,7 @@ void WindowManager::killWindowManager() {
     delwin(messageDisplayWindow);
     endwin();
 }
-/
+
 //used to set the size of the ring buffer
 int WindowManager::getMessageWindowRows() {
     return getmaxy(this->messageDisplayWindow);
