@@ -16,7 +16,7 @@ public:
     void setRingBuffer(RingBuffer *ringBuffer);
     int getMessageWindowRows();
     void updateMessageWindow();
-    void getUserInput();
+    void getUserInput(std::function < void(std::string) > theFunction);
 
 
 private:

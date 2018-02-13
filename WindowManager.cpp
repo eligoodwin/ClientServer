@@ -40,7 +40,7 @@ int WindowManager::getMessageWindowRows() {
     return getmaxy(this->messageDisplayWindow);
 }
 
-void WindowManager::getUserInput() {
+void WindowManager::getUserInput(std::function <void(string)>theFunction) {
     int rows = getmaxy(this->userInputWindow);
     char inputBuffer[500];
 
@@ -52,8 +52,8 @@ void WindowManager::getUserInput() {
         wprintw(userInputWindow, "SEND >> ");
         wgetstr(userInputWindow, inputBuffer);
         wclrtoeol(userInputWindow);
-        ringBuffer->push(inputBuffer, true);
-
+        //ringBuffer->push(inputBuffer, true);
+        theFunction(inputBuffer);
         this->updateMessageWindow();
     }
 }
@@ -70,7 +70,7 @@ void WindowManager::updateMessageWindow() {
     Data* messageData = nullptr;
     for(int i = 0; i < bufferCapacity; ++i){
         messageData = ringBuffer->iterateObject(i);
-        if(!messageData->message.empty() && messageData->fromClinet){
+        if(!messageData->message.empty() && !messageData->fromClinet){
             mvwprintw(messageDisplayWindow, i + 1, 0, "SERVER SAYS: %s", messageData->message.c_str());
         }
         else if(!messageData->message.empty() && messageData->fromClinet){

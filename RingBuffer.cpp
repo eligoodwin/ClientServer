@@ -28,7 +28,7 @@ void RingBuffer::push(string mess, bool fromClient){
 }
 
 MessageData* RingBuffer::iterateObject(int i){
-    return &(storage[(i +  currentIndex) % capacity]);
+    return &(storage[(i + currentIndex) % capacity]);
 }
 
 

@@ -47,16 +47,17 @@ void ClientManager::endConnection() {
     close(socketFD);
 }
 
-void ClientManager::incomingListener(function <void()> functionToRun) {
+void ClientManager::incomingListener(function < void() > functionToRun) {
     char tempBuffer[BUFFER_SIZE];
     memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
     while(!killWorkerThread){
         int result = recv(socketFD, tempBuffer, BUFFER_SIZE, 0);
         if(result > 0){
             ringBuffer->push(tempBuffer, false);
-            memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
             //insert function to pass here!
             functionToRun();
+            memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
+
         }
     }
 }
