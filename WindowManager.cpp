@@ -67,13 +67,16 @@ void WindowManager::updateMessageWindow() {
     int bufferCapacity = ringBuffer->getCapacity();
     wclear(messageDisplayWindow);
     mvwprintw(messageDisplayWindow, 0, 0, "MESSAGES:");
+
     Data* messageData = nullptr;
+
     for(int i = 0; i < bufferCapacity; ++i){
         messageData = ringBuffer->iterateObject(i);
         if(!messageData->message.empty() && !messageData->fromClinet){
             mvwprintw(messageDisplayWindow, i + 1, 0, "SERVER SAYS: %s", messageData->message.c_str());
         }
         else if(!messageData->message.empty() && messageData->fromClinet){
+
             mvwprintw(messageDisplayWindow, i + 1, 0, "YOU SAID: %s", messageData->message.c_str());
         }
     }
