@@ -22,10 +22,9 @@ public:
     ClientManager(std::string targethostName, int targetHostPort, RingBuffer* ringBuffer);
     void sendMessage(std::string message);
     void endConnection();
-    void incomingListener();
+    void incomingListener(std::function <void()> functionToRun);
     void killListener();
 
-    friend void updateWindow();
 
 private:
     RingBuffer* ringBuffer;

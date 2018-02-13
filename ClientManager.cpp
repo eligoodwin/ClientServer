@@ -20,15 +20,14 @@ bool ClientManager::createSocket() {
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(this->targetHostPort);
 
-    if(serverHostInfo == NULL){
+    if(serverHostInfo == nullptr){
         return false;
     }
 
     memcpy((char*)&serverAddress.sin_addr.s_addr, (char*)serverHostInfo->h_addr, serverHostInfo->h_length );
     socketFD = socket(AF_INET, SOCK_STREAM, 0);
-    if(socketFD < 0)
-        return false;
-    return true;
+
+    return (socketFD < 0);
 }
 
 void ClientManager::sendMessage(string message){
@@ -48,7 +47,7 @@ void ClientManager::endConnection() {
     close(socketFD);
 }
 
-void ClientManager::incomingListener() {
+void ClientManager::incomingListener(function <void()> functionToRun) {
     char tempBuffer[BUFFER_SIZE];
     memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
     while(!killWorkerThread){
@@ -57,6 +56,7 @@ void ClientManager::incomingListener() {
             ringBuffer->push(tempBuffer, false);
             memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
             //insert function to pass here!
+            functionToRun();
         }
     }
 }
