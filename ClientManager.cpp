@@ -56,6 +56,7 @@ void ClientManager::incomingListener() {
         if(result > 0){
             ringBuffer->push(tempBuffer, false);
             memset(tempBuffer, '\0', BUFFER_SIZE * sizeof(char));
+            //insert function to pass here!
         }
     }
 }
